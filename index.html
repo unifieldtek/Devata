@@ -1,188 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Devata Recitations</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #111; color: #0f0; text-align: center; margin: 0; padding: 10px; }
-    h1 { color: #0f0; margin: 20px 0; }
-    .container { position: relative; max-width: 1000px; margin: 0 auto; display: inline-block; }
-    #main-image { width: 100%; max-width: 1795px; height: auto; border: 3px solid #444; border-radius: 12px; display: block; }
-    
-    /* The active highlight box (Cyan) */
-    .highlight {
-      position: absolute;
-      border: 5px solid #0ff;
-      box-shadow: 0 0 30px #0ff;
-      pointer-events: none;
-      transition: all 0.4s;
-      border-radius: 8px;
-      display: none;
-      z-index: 10;
-    }
-
-    /* TROUBLESHOOTING HOTSPOTS: Currently set to semi-transparent green */
-    /* For final production, change background to: rgba(255,255,255,0) and remove the border! */
-    .hotspot { 
-      position: absolute; 
-      cursor: pointer; 
-      background: rgba(255, 255, 255, 0); 
-      /*border: 2px dashed #0f0;
-      box-sizing: border-box;
-      z-index: 5;
-    }
-
-    .now-playing {
-      margin: 20px auto;
-      padding: 15px;
-      background: #222;
-      border-radius: 10px;
-      max-width: 800px;
-      min-height: 50px;
-    }
-    .demo-btn {
-margin: 25px auto;      
-padding: 15px 40px;      
-font-size: 1.4em;      
-      background: #330;
-      color: #ff0;
-      border: 3px solid #f80;
-      border-radius: 12px;
-      cursor: pointer;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vedic Devata Display - Select Version</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 0 20px;
+            color: #333;
+            text-align: center;
+        }
+        h1 {
+            color: #111;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .version-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .version-btn {
+            display: block;
+            padding: 15px 20px;
+            background-color: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #0969da;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .version-btn:hover {
+            background-color: #0969da;
+            color: #ffffff;
+            border-color: #0969da;
+        }
+        .description {
+            font-size: 0.85em;
+            color: #57606a;
+            font-weight: normal;
+            display: block;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 <body>
 
-  <h1>Devata Recitations</h1>
-  <div class="now-playing" id="status">Ready - Tap a section</div>
+    <h1>Vedic Devata Interactive Display</h1>
+    <p>Please select a version to view the display and hear the recitations:</p>
 
-  <div class="container">
-    <img id="main-image" src="statue_map.jpg" alt="Statue Map">
-    <div class="highlight" id="highlight"></div>
+    <div class="version-list">
+        <a href="Version_1.html" class="version-btn">
+            Version 1
+            <span class="description">Standard hotspot selection styling</span>
+        </a>
+        <a href="Version_2.html" class="version-btn">
+            Version 2
+            <span class="description">Alternate hotspot highlighting method</span>
+        </a>
+        <a href="Version_3.html" class="version-btn">
+            Version 3
+            <span class="description">Enhanced visual hotspot highlighting</span>
+        </a>
+    </div>
 
-    <div class="hotspot" style="left:5%; top:77%; width:26%; height:18%;" onclick="playFull(0)" title="Hanuman"></div>
-    <div class="hotspot" style="left:34%; top:77%; width:26%; height:18%;" onclick="playFull(1)" title="Ganesh"></div>
-    <div class="hotspot" style="left:66%; top:77%; width:26%; height:18%;" onclick="playFull(2)" title="Shiva"></div>
-    <div class="hotspot" style="left:69%; top:52%; width:24%; height:19%;" onclick="playFull(3)" title="Saraswati"></div>
-    <div class="hotspot" style="left:37%; top:52%; width:29%; height:19%;" onclick="playFull(4)" title="Durga"></div>
-    <div class="hotspot" style="left:5%; top:52%; width:29%; height:19%;" onclick="playFull(5)" title="Narayana"></div>
-    <div class="hotspot" style="left:4%; top:29%; width:48%; height:18%;" onclick="playFull(6)" title="Vishnu"></div>
-    <div class="hotspot" style="left:55%; top:29%; width:40%; height:18%;" onclick="playFull(7)" title="Surya"></div>
-    <div class="hotspot" style="left:5%; top:4.2%; width:89%; height:18.5%;" onclick="playFull(8)" title="Mahalakshmi"></div>
-  </div>
-
-  <br>
-  <button class="demo-btn" onclick="handleDemoClick()">▶ DEMO MODE (60s random clips)</button>
-  <br>
-
-  <audio id="player" controls style="margin-top:20px; width:90%; max-width:800px;"></audio>
-
-  <script>
-    const player = document.getElementById('player');
-    const status = document.getElementById('status');
-    const highlight = document.getElementById('highlight');
-    let demoInterval = null;
-    let lastDemoClickTime = 0; // Tracks timestamp of previous button press
-
-    // Zero-indexed alignment matching our hotspot loops
-    const statueNames = [
-      "Hanuman", "Ganesh", "Shiva", "Saraswati", "Durga", "Narayana", "Vishnu", "Surya", "Mahalakshmi"
-    ];
-
-    const boxes = [
-      {left:"5%", top:"77%", width:"26%", height:"18%"},    // 0: Hanuman
-      {left:"34%", top:"77%", width:"26%", height:"18%"},   // 1: Ganesh
-      {left:"66%", top:"77%", width:"26%", height:"18%"},   // 2: Shiva
-      {left:"69%", top:"52%", width:"24%", height:"19%"},   // 3: Saraswati
-      {left:"37%", top:"52%", width:"29%", height:"19%"},   // 4: Durga
-      {left:"5%", top:"52%", width:"29%", height:"19%"},    // 5: Narayana
-      {left:"4%", top:"29%", width:"48%", height:"18%"},    // 6: Vishnu
-      {left:"55%", top:"29%", width:"40%", height:"18%"},   // 7: Surya
-      {left:"5%", top:"4.2%", width:"89%", height:"18.5%"}  // 8: Mahalakshmi
-    ];
-
-    function highlightStatue(index) {
-      if (index >= 0 && index < boxes.length) {
-        const b = boxes[index];
-        highlight.style.left = b.left;
-        highlight.style.top = b.top;
-        highlight.style.width = b.width;
-        highlight.style.height = b.height;
-        highlight.style.display = 'block';
-      }
-    }
-
-    function clearHighlight() {
-      highlight.style.display = 'none';
-    }
-
-    function playFull(index) {
-      clearDemo();
-      // File padding changed to 4-digits to target 0001.mp3 through 0009.mp3 correctly
-      const file = `audio/full/${String(index + 1).padStart(4, '0')}.mp3`;
-      
-      player.src = file;
-      player.play().catch(err => console.log("Playback error:", err));
-      status.textContent = `Playing full version - ${statueNames[index]}`;
-      highlightStatue(index);
-    }
-
-    function playRandomClip(index) {
-      const maxClips = [6, 11, 21, 40, 40, 7, 35, 5, 31];
-      const maxClip = maxClips[index] || 5;
-      const clip = Math.floor(Math.random() * maxClip) + 1;
-      
-      const folder = String(index + 1).padStart(2, '0');
-      const file = `audio/${folder}/${String(clip).padStart(3, '0')}.mp3`;
-      
-      player.src = file;
-      player.play().catch(err => console.log("Playback error:", err));
-      status.textContent = `Demo - ${statueNames[index]} (clip ${clip})`;
-      highlightStatue(index);
-    }
-
-    // Handles physical hardware double-press logic emulation
-    function handleDemoClick() {
-      const currentTime = new Date().getTime();
-      const timeDifference = currentTime - lastDemoClickTime;
-
-      // If clicked again within 2 seconds (2000 milliseconds) while demo is active
-      if (demoInterval && timeDifference < 2000) {
-        stopEverything();
-        status.textContent = "Demo Stopped - Returned to Wait State";
-      } else {
-        startDemo();
-      }
-      
-      lastDemoClickTime = currentTime;
-    }
-
-    function startDemo() {
-      clearDemo();
-      status.textContent = "Demo Mode Initializing...";
-      
-      let current = 0; // Starts at index 0 (Hanuman)
-      function next() {
-        playRandomClip(current);
-        current = (current + 1) % 9; // Seamlessly loop 0 through 8
-      }
-      next();
-      demoInterval = setInterval(next, 60000); 
-    }
-
-    function clearDemo() {
-      if (demoInterval) clearInterval(demoInterval);
-      demoInterval = null;
-      clearHighlight();
-    }
-
-    function stopEverything() {
-      clearDemo();
-      player.pause();
-      player.src = ""; // Clears track memory
-    }
-  </script>
 </body>
 </html>
